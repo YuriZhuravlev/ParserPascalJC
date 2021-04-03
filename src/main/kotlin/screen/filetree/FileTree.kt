@@ -62,14 +62,21 @@ class ExpandableFile(
     val canExpand: Boolean get() = file.hasChildren
 
     fun toggleExpanded() {
-        children = if (children.isEmpty()) {
+        if (children.isEmpty()) {
+            children = file.children
+                .map { ExpandableFile(it, level + 1) }
+                .sortedWith(compareBy({ it.file.isDirectory }, { it.file.name }))
+                .sortedBy { !it.file.isDirectory }
+        }
+// TODO
+        /*children = if (children.isEmpty()) {
             file.children
                 .map { ExpandableFile(it, level + 1) }
                 .sortedWith(compareBy({ it.file.isDirectory }, { it.file.name }))
                 .sortedBy { !it.file.isDirectory }
         } else {
             emptyList()
-        }
+        }*/
     }
 }
 
