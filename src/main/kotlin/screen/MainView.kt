@@ -1,5 +1,6 @@
 package screen
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import screen.common.AppTheme
