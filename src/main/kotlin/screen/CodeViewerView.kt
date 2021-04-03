@@ -25,6 +25,8 @@ import androidx.compose.ui.unit.dp
 import screen.editor.EditorEmptyView
 import screen.editor.EditorTabsView
 import screen.editor.EditorView
+import screen.filetree.FileTreeView
+import screen.filetree.FileTreeViewTabView
 import screen.statusbar.StatusBar
 import util.SplitterState
 import util.VerticalSplittable
@@ -59,10 +61,8 @@ fun CodeViewerView(model: CodeViewer) {
     ) {
         ResizablePanel(Modifier.width(animatedSize).fillMaxHeight(), panelState) {
             Column {
-                Text("tree")
-                Text("tree")
-//                FileTreeViewTabView()
-//                FileTreeView(model.fileTree)
+                FileTreeViewTabView()
+                FileTreeView(model.fileTree)
             }
         }
         Box {

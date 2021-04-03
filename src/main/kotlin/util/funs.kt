@@ -128,3 +128,11 @@ private class IntList(initialCapacity: Int = 16) {
         array = array.copyOfRange(0, size)
     }
 }
+
+val File.children: List<File>
+    get() = this
+        .listFiles { _, name -> !name.startsWith(".") }
+        .orEmpty()
+        .map { it }
+val File.hasChildren: Boolean
+    get() = isDirectory && listFiles()?.size ?: 0 > 0

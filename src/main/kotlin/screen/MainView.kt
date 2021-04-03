@@ -28,7 +28,7 @@ fun MainView() {
 
         CodeViewer(
             editors = editors,
-//            fileTree = FileTree(HomeFolder, editors),
+            fileTree = FileTree(java.io.File(System.getProperty("user.dir")), editors),
             settings = Settings()
         )
     }

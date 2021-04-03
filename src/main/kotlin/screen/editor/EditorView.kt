@@ -122,6 +122,7 @@ private fun LineNumber(number: String, modifier: Modifier, settings: Settings) =
 @Composable
 private fun LineContent(content: Editor.Content, modifier: Modifier, settings: Settings) = Text(
     text = "asd",
+    // TODO
     /*text = if (content.isCode) {
         codeString(content.value.value)
     } else {
