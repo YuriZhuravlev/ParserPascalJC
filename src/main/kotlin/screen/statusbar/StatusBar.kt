@@ -1,7 +1,6 @@
 package screen.statusbar
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.LocalContentColor
 import androidx.compose.material.Slider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -10,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.*
+import screen.common.AppTheme
 import screen.common.Settings
 
 private val MinFontSize = 6.sp
@@ -26,7 +26,7 @@ fun StatusBar(settings: Settings) = Box(
         Text(
             text = "Text size",
             modifier = Modifier.align(Alignment.CenterVertically),
-            color = LocalContentColor.current.copy(alpha = 0.60f),
+            color = AppTheme.colors.textTabs.copy(alpha = 0.60f),
             fontSize = 12.sp
         )
 

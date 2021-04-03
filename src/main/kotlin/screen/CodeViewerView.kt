@@ -4,12 +4,11 @@ import androidx.compose.animation.core.Spring.StiffnessLow
 import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentColor
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
@@ -22,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
+import screen.common.AppTheme
 import screen.editor.EditorEmptyView
 import screen.editor.EditorTabsView
 import screen.editor.EditorView
@@ -52,7 +52,7 @@ fun CodeViewerView(model: CodeViewer) {
         ).value
     }
     VerticalSplittable(
-        Modifier.fillMaxSize(),
+        Modifier.fillMaxSize().background(AppTheme.colors.backgroundMedium),
         panelState.splitter,
         onResize = {
             panelState.expandedSize =
@@ -106,7 +106,7 @@ private fun ResizablePanel(
         Icon(
             if (state.isExpanded) Icons.Default.ArrowBack else Icons.Default.ArrowForward,
             contentDescription = if (state.isExpanded) "Collapse" else "Expand",
-            tint = LocalContentColor.current,
+            tint = AppTheme.colors.textTabs,
             modifier = Modifier
                 .padding(top = 4.dp)
                 .width(24.dp)

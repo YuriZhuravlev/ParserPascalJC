@@ -13,10 +13,12 @@ object AppTheme {
         val backgroundDark: Color = Color(0xFF2B2B2B),
         val backgroundMedium: Color = Color(0xFF3C3F41),
         val backgroundLight: Color = Color(0xFF4E5254),
+        val textTabs: Color = Color.LightGray,
 
         val material: androidx.compose.material.Colors = darkColors(
             background = backgroundDark,
             surface = backgroundMedium,
+            onSurface = Color.LightGray,
             primary = Color.White
         ),
     )

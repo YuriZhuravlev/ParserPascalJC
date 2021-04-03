@@ -50,7 +50,7 @@ fun EditorTabView(model: Editor) = Surface(
 
         Text(
             model.fileName,
-            color = LocalContentColor.current,
+            color = AppTheme.colors.textTabs,
             fontSize = 12.sp,
             modifier = Modifier.padding(horizontal = 4.dp)
         )
@@ -58,7 +58,7 @@ fun EditorTabView(model: Editor) = Surface(
         if (close != null) {
             Icon(
                 Icons.Default.Close,
-                tint = LocalContentColor.current,
+                tint = AppTheme.colors.textTabs,
                 contentDescription = "Close",
                 modifier = Modifier
                     .size(24.dp)

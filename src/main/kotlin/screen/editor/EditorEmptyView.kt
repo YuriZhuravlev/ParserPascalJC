@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import screen.common.AppTheme
 
 @Composable
 fun EditorEmptyView() = Box(Modifier.fillMaxSize()) {
@@ -24,13 +25,13 @@ fun EditorEmptyView() = Box(Modifier.fillMaxSize()) {
         Icon(
             Icons.Default.Home,
             contentDescription = null,
-            tint = LocalContentColor.current.copy(alpha = 0.60f),
+            tint = AppTheme.colors.textTabs.copy(alpha = 0.60f),
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
 
         Text(
             "To view file open it from the file tree",
-            color = LocalContentColor.current.copy(alpha = 0.60f),
+            color = AppTheme.colors.textTabs.copy(alpha = 0.60f),
             fontSize = 20.sp,
             modifier = Modifier.align(Alignment.CenterHorizontally).padding(16.dp)
         )
