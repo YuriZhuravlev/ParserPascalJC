@@ -32,7 +32,7 @@ fun FileTreeViewTabView() = Surface {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            "Files",
+            "Файлы",
             color = LocalContentColor.current.copy(alpha = 0.60f),
             fontSize = 12.sp,
             modifier = Modifier.padding(horizontal = 4.dp)
@@ -117,6 +117,7 @@ private fun FileItemIcon(modifier: Modifier, model: FileTree.Item) = Box(modifie
             )
         }
         is FileTree.ItemType.File -> when (type.ext) {
+            "pas" -> Icon(Icons.Default.Info, contentDescription = null, tint = Color(0xFFDFE3E4))
             else -> Icon(Icons.Default.Face, contentDescription = null, tint = Color(0xFF87939A))
         }
     }

@@ -1,6 +1,8 @@
 package screen.statusbar
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
 import androidx.compose.material.Slider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -24,7 +26,7 @@ fun StatusBar(settings: Settings) = Box(
 ) {
     Row(Modifier.fillMaxHeight().align(Alignment.CenterEnd)) {
         Text(
-            text = "Text size",
+            text = "Размер текста",
             modifier = Modifier.align(Alignment.CenterVertically),
             color = AppTheme.colors.textTabs.copy(alpha = 0.60f),
             fontSize = 12.sp

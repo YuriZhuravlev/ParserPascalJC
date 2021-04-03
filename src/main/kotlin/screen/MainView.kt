@@ -1,11 +1,17 @@
 package screen
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import screen.common.AppTheme
 import screen.common.Settings
 import screen.editor.Editors
 import screen.filetree.FileTree
+import screen.toolbar.Toolbar
+import screen.toolbar.ToolbarView
 
 @Composable
 fun MainView() {
@@ -23,6 +29,9 @@ fun MainView() {
     MaterialTheme(
         colors = AppTheme.colors.material
     ) {
-        CodeViewerView(codeViewer)
+        Column(Modifier.fillMaxSize().background(AppTheme.colors.backgroundMedium)) {
+            ToolbarView(Toolbar(codeViewer))
+            CodeViewerView(codeViewer)
+        }
     }
 }
