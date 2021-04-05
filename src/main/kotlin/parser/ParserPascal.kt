@@ -96,6 +96,7 @@ class ParserPascal(val text: String) {
         // <программа> ::= <заголовок программы> ; <блок> .
         if (head()
             && getToken(true) == ';'
+            && nextToken()
             && block()
             && getToken(true) == '.'
         ) {
@@ -141,16 +142,50 @@ class ParserPascal(val text: String) {
 
     private fun sectionConsts(): Boolean {
         // <раздел констант> ::= const <описание константы> ; {<описание константы> ; }
+        getToken(true)
+        if (terminal(CONST)
+            && descriptionConst()
+            && getToken(true) == ';'
+            && nextToken()
+        ) {
+            var index = mIndex
+            while (descriptionConst() && getToken(true) == ';' && nextToken()) {
+                index = mIndex
+            }
+            mIndex = index
+            return true
+        }
         return false
     }
-    // <описание константы> ::= <идентификатор> = <выражение>
+
+    private fun descriptionConst(): Boolean {
+        // <описание константы> ::= <идентификатор> = <выражение>
+        return false
+    }
 
     private fun sectionVars(): Boolean {
         // <раздел переменных> ::= var <описание переменных> ; {<описание переменных>;}
+        getToken(true)
+        if (terminal(VAR)
+            && descriptionVars()
+            && getToken(true) == ';'
+            && nextToken()
+        ) {
+            var index = mIndex
+            while (descriptionVars() && getToken(true) == ';' && nextToken()) {
+                index = mIndex
+            }
+            mIndex = index
+            return true
+        }
         return false
     }
 
-    //<описание переменных> ::= <список имен переменных> : <тип>
+    private fun descriptionVars(): Boolean {
+        // <описание переменных> ::= <список имен переменных> : <тип>
+        return false
+    }
+
     //<список имен переменных> ::= <идентификатор> | <список имен переменных> , <идентификатор>
     //<оператор> ::= <ввод/вывод> | <оператор выбора> | <оператор цикла> | <составной оператор> | <оператор присваивания>
     //<ввод/вывод> ::= <оператор ввода/вывода> ”(“ <выражение> “)” | <оператор ввода/вывода> “()” | <оператор ввода/вывода>
@@ -183,10 +218,9 @@ class ParserPascal(val text: String) {
     }
 
     private fun identifier(): Boolean {
-        if (getToken(true).isLetter()) {
-            nextToken()
-            while (getToken().isLetterOrDigit()) {
-                nextToken()
+        if (getToken(true).isLetter() && nextToken()) {
+            while (getToken().isLetterOrDigit() && nextToken()) {
+                // next token body
             }
             return true
         }
