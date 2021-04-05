@@ -30,7 +30,9 @@ class ParserPascal(val text: String) {
         const val OR = "or"
         const val AND = "and"
         const val NOT = "not"
-        val setSeparator = setOf(' ', '\n', '\r')
+        const val TRUE = "true"
+        const val FALSE = "false"
+        val setSeparator = setOf(' ', '\n', '\r', '\t')
         val setArithmeticOperations = setOf("+", "-", "*", DIV)
         val setRelationshipOperations = setOf("=", "<", ">", "<=", ">=", "<>")
     }
@@ -56,8 +58,16 @@ class ParserPascal(val text: String) {
         return next
     }
 
-    private fun getToken(): Char {
+    private fun getToken(skipSeparators: Boolean = false): Char {
+        if (skipSeparators && setSeparator.contains(getToken())) {
+            nextTokenAndSkipSeparator()
+        }
         return text[mIndex]
+    }
+
+    private fun setIndex(new: Int): Boolean {
+        mIndex = new
+        return true
     }
 
     private fun terminal(word: String): Boolean {
@@ -83,13 +93,110 @@ class ParserPascal(val text: String) {
     }
 
     private fun program(): Boolean {
-        if (head()) {
-
+        // <программа> ::= <заголовок программы> ; <блок> .
+        if (head()
+            && getToken(true) == ';'
+            && block()
+            && getToken(true) == '.'
+        ) {
+            return empty()
         }
         return false
     }
 
     private fun head(): Boolean {
+        // <заголовок программы> ::= program <идентификатор>
+        getToken(true)
+        if (terminal(PROGRAM)
+            && identifier()
+        ) {
+            return true
+        }
         return false
+    }
+
+    private fun block(): Boolean {
+        // <блок> ::= <раздел описаний> <раздел операторов> | <раздел операторов>
+        val index = mIndex
+        if ((sectionDescription() && sectionOperator())
+            || (setIndex(index) && sectionOperator())
+        ) {
+            return true
+        }
+        return false
+    }
+
+    private fun sectionDescription(): Boolean {
+        // <раздел описаний> ::= <раздел констант> <раздел переменных> | <раздел переменных> <раздел констант> | <раздел констант> | <раздел переменных>
+        val index = mIndex
+        if ((sectionConsts() && sectionVars())
+            || (setIndex(index) && sectionVars() && sectionConsts())
+            || (setIndex(index) && sectionConsts())
+            || (setIndex(index) && sectionVars())
+        ) {
+            return true
+        }
+        return false
+    }
+
+    private fun sectionConsts(): Boolean {
+        // <раздел констант> ::= const <описание константы> ; {<описание константы> ; }
+        return false
+    }
+    // <описание константы> ::= <идентификатор> = <выражение>
+
+    private fun sectionVars(): Boolean {
+        // <раздел переменных> ::= var <описание переменных> ; {<описание переменных>;}
+        return false
+    }
+
+    //<описание переменных> ::= <список имен переменных> : <тип>
+    //<список имен переменных> ::= <идентификатор> | <список имен переменных> , <идентификатор>
+    //<оператор> ::= <ввод/вывод> | <оператор выбора> | <оператор цикла> | <составной оператор> | <оператор присваивания>
+    //<ввод/вывод> ::= <оператор ввода/вывода> ”(“ <выражение> “)” | <оператор ввода/вывода> “()” | <оператор ввода/вывода>
+    //<оператор ввода/вывода> ::= write | read
+    //<оператор выбора> ::= if <логическое выражение> then <оператор> | if <логическое выражение> then <оператор> else <оператор>
+    //<оператор цикла> ::= for <идентификатор> := <выражение> to <выражение> do <оператор> | for <идентификатор> := <выражение> downto <выражение> do <оператор>
+    //<составной оператор> ::= begin <список операторов> end | begin end
+    //<список операторов> ::= <оператор> |  <оператор> ; | <оператор> ; <список операторов>
+    //<оператор присваивания> ::= <переменная> := <выражение> | <переменная> := @ <идентификатор>
+    //<выражение> ::= <арифметическое выражение> | <логическое выражение>
+    //<логическое выражение> ::= <простое логическое выражение> | <отношение>
+    //<простое логическое выражение> ::= < логическое слагаемое > | <простое логическое выражение> or <логическое слагаемое>
+    //<логическое слагаемое> ::= <логический множитель> | <логическое слагаемое> and <логический множитель>
+    //<логический множитель> ::= <логическая константа> | <переменная> | not <логический множитель> | “(“ <логическое выражение> “)”
+    //<отношение> ::= <арифметическое выражение> <операция сравнения><арифметическое выражение> | <простое логическое выражение> <операция сравнения> <простое логическое выражение>
+    //<арифметическое выражение> ::= <слагаемое> { <операции сложения> <слагаемое> } | <операция сложения> <слагаемое> { <операция сложения> <слагаемое>}
+    //<слагаемое> ::= <множитель> { <операция умножения> <множитель> }
+    //<множитель> ::= <целое число> | <переменная> | “(“ <арифметическое выражение> “)”
+    //<переменная> ::= (^) <идентификатор>
+    //<целое число> ::= <цифра> | - <цифра> | + <цифра> | <целое число><цифра>
+    //<операция сложения> ::= + | –
+    //<операция умножения> ::= * | div
+    //<логическая константа> ::= true | false
+    //<операция сравнения> ::= <> | <= | < | = | >= | >
+    //<тип> ::= (^) integer | (^) boolean
+
+    private fun sectionOperator(): Boolean {
+        //<раздел операторов> ::= begin <список операторов> end | begin end
+        return false
+    }
+
+    private fun identifier(): Boolean {
+        if (getToken(true).isLetter()) {
+            nextToken()
+            while (getToken().isLetterOrDigit()) {
+                nextToken()
+            }
+            return true
+        }
+        return false
+    }
+
+    private fun empty(): Boolean {
+        if (mIndex == text.lastIndex) {
+            return true
+        }
+        return setSeparator.contains(getToken(true))
     }
 }
