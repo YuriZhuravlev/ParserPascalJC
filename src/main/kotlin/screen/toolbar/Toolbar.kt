@@ -36,4 +36,12 @@ class Toolbar(val codeViewer: CodeViewer) {
             }
         }
     }
+
+    fun onEdit() {
+        //TODO("Not yet implemented")
+    }
+
+    fun onAdd() {
+        //TODO("Not yet implemented")
+    }
 }
