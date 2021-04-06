@@ -1,11 +1,11 @@
 import androidx.compose.desktop.Window
-import java.awt.image.BufferedImage
-import javax.imageio.ImageIO
+import androidx.compose.ui.unit.IntSize
 import screen.MainView
 
 fun main() = Window(
     title = "Parser Pascal",
     icon = loadImageResource("ic_app.png"),
+    size = IntSize(1024, 768)
 ) {
     MainView()
 }
