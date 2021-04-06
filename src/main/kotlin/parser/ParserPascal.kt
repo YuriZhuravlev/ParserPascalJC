@@ -217,14 +217,53 @@ class ParserPascal(val text: String) {
         return false
     }
 
-    //<оператор> ::= <ввод/вывод> | <оператор выбора> | <оператор цикла> | <составной оператор> | <оператор присваивания>
-    //<ввод/вывод> ::= <оператор ввода/вывода> ”(“ <выражение> “)” | <оператор ввода/вывода> “()” | <оператор ввода/вывода>
-    //<оператор ввода/вывода> ::= write | read
-    //<оператор выбора> ::= if <логическое выражение> then <оператор> | if <логическое выражение> then <оператор> else <оператор>
-    //<оператор цикла> ::= for <идентификатор> := <выражение> to <выражение> do <оператор> | for <идентификатор> := <выражение> downto <выражение> do <оператор>
-    //<составной оператор> ::= begin <список операторов> end | begin end
-    //<список операторов> ::= <оператор> |  <оператор> ; | <оператор> ; <список операторов>
-    //<оператор присваивания> ::= <переменная> := <выражение> | <переменная> := @ <идентификатор>
+    private fun operator(): Boolean {
+        // <оператор> ::= <ввод/вывод> | <оператор выбора> | <оператор цикла> | <составной оператор> | <оператор присваивания>
+        // TODO
+        return false
+    }
+
+    private fun inputOutput(): Boolean {
+        // <ввод/вывод> ::= <оператор ввода/вывода> ”(“ <выражение> “)” | <оператор ввода/вывода> “()” | <оператор ввода/вывода>
+        // TODO
+        return false
+    }
+
+    private fun operatorInputOutput(): Boolean {
+        // <оператор ввода/вывода> ::= write | read
+        // TODO
+        return false
+    }
+
+    private fun operatorSelect(): Boolean {
+        // <оператор выбора> ::= if <логическое выражение> then <оператор> | if <логическое выражение> then <оператор> else <оператор>
+        // TODO
+        return false
+    }
+
+    private fun operatorLoop(): Boolean {
+        // <оператор цикла> ::= for <идентификатор> := <выражение> to <выражение> do <оператор> | for <идентификатор> := <выражение> downto <выражение> do <оператор>
+        // TODO
+        return false
+    }
+
+    private fun operatorCompound(): Boolean {
+        // <составной оператор> ::= begin <список операторов> end | begin end
+        // TODO
+        return false
+    }
+
+    private fun operatorsList(): Boolean {
+        // <список операторов> ::= <оператор> |  <оператор> ; | <оператор> ; <список операторов>
+        // TODO
+        return false
+    }
+
+    private fun operatorAssignment(): Boolean {
+        // <оператор присваивания> ::= <переменная> := <выражение> | <переменная> := @ <идентификатор>
+        // TODO
+        return false
+    }
 
     private fun expression(): Boolean {
         //<выражение> ::= <арифметическое выражение> | <логическое выражение>
@@ -232,14 +271,53 @@ class ParserPascal(val text: String) {
         return false
     }
 
-    //<логическое выражение> ::= <простое логическое выражение> | <отношение>
-    //<простое логическое выражение> ::= < логическое слагаемое > | <простое логическое выражение> or <логическое слагаемое>
-    //<логическое слагаемое> ::= <логический множитель> | <логическое слагаемое> and <логический множитель>
-    //<логический множитель> ::= <логическая константа> | <переменная> | not <логический множитель> | “(“ <логическое выражение> “)”
-    //<отношение> ::= <арифметическое выражение> <операция сравнения><арифметическое выражение> | <простое логическое выражение> <операция сравнения> <простое логическое выражение>
-    //<арифметическое выражение> ::= <слагаемое> { <операции сложения> <слагаемое> } | <операция сложения> <слагаемое> { <операция сложения> <слагаемое>}
-    //<слагаемое> ::= <множитель> { <операция умножения> <множитель> }
-    //<множитель> ::= <целое число> | <переменная> | “(“ <арифметическое выражение> “)”
+    private fun booleanExpression(): Boolean {
+        //<логическое выражение> ::= <простое логическое выражение> | <отношение>
+        // TODO
+        return false
+    }
+
+    private fun simpleBooleanExpression(): Boolean {
+        //<простое логическое выражение> ::= < логическое слагаемое > | <простое логическое выражение> or <логическое слагаемое>
+        // TODO
+        return false
+    }
+
+    private fun booleanTerm(): Boolean {
+        //<логическое слагаемое> ::= <логический множитель> | <логическое слагаемое> and <логический множитель>
+        // TODO
+        return false
+    }
+
+    private fun booleanFactor(): Boolean {
+        //<логический множитель> ::= <логическая константа> | <переменная> | not <логический множитель> | “(“ <логическое выражение> “)”
+        // TODO
+        return false
+    }
+
+    private fun relationship(): Boolean {
+        //<отношение> ::= <арифметическое выражение> <операция сравнения><арифметическое выражение> | <простое логическое выражение> <операция сравнения> <простое логическое выражение>
+        // TODO
+        return false
+    }
+
+    private fun arithmeticExpression(): Boolean {
+        //<арифметическое выражение> ::= <слагаемое> { <операции сложения> <слагаемое> } | <операция сложения> <слагаемое> { <операция сложения> <слагаемое>}
+        // TODO
+        return false
+    }
+
+    private fun term(): Boolean {
+        //<слагаемое> ::= <множитель> { <операция умножения> <множитель> }
+        // TODO
+        return false
+    }
+
+    private fun factor(): Boolean {
+        //<множитель> ::= <целое число> | <переменная> | “(“ <арифметическое выражение> “)”
+        // TODO
+        return false
+    }
 
     private fun variable(): Boolean {
         // <переменная> ::= <идентификатор>(^)
@@ -270,17 +348,20 @@ class ParserPascal(val text: String) {
         getToken(true)
         val index = mIndex
         if ((getToken() == '+' && nextToken())
-            || (setIndex(index) && (getToken() == '-' && nextToken()))) {
+            || (setIndex(index) && (getToken() == '-' && nextToken()))
+        ) {
             return true
         }
         return false
     }
+
     private fun multiplicationOperations(): Boolean {
         // <операция умножения> ::= * | div
         getToken(true)
         val index = mIndex
         if ((getToken() == '*' && nextToken())
-            || (setIndex(index) && terminal(DIV))) {
+            || (setIndex(index) && terminal(DIV))
+        ) {
             return true
         }
         return false
@@ -291,7 +372,8 @@ class ParserPascal(val text: String) {
         getToken(true)
         val index = mIndex
         if (terminal(TRUE)
-            || (setIndex(index) && terminal(FALSE))) {
+            || (setIndex(index) && terminal(FALSE))
+        ) {
             return true
         }
         return false
@@ -327,7 +409,8 @@ class ParserPascal(val text: String) {
         }
         val index = mIndex
         if (terminal(INTEGER)
-            || (setIndex(index) && terminal(BOOLEAN))) {
+            || (setIndex(index) && terminal(BOOLEAN))
+        ) {
             return true
         }
         return false
