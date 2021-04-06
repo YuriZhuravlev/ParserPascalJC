@@ -17,8 +17,7 @@ class Toolbar(val codeViewer: CodeViewer) {
     fun checkText(onSuccess: () -> Unit, onFailure: () -> Unit) {
         GlobalScope.launch(Dispatchers.IO) {
             try {
-                val text = File("build/test.pas").readText()
-                //val text = File(codeViewer.editors.active!!.fileName).readText()
+                val text = File(codeViewer.editors.active!!.filePath).readText()
                 mParser = ParserPascal(text)
                 val res = mParser.parse()
                 if (res) {

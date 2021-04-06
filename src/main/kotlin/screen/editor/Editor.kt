@@ -10,6 +10,7 @@ import java.io.File
 
 class Editor(
     val fileName: String,
+    val filePath: String,
     val lines: (backgroundScope: CoroutineScope) -> Lines
 ) {
     var close: (() -> Unit)? = null
@@ -33,7 +34,7 @@ class Editor(
     class Content(val value: State<String>, val isCode: Boolean)
 }
 
-fun createEditor(file: File) = Editor(fileName = file.name) { backgroundScope ->
+fun createEditor(file: File) = Editor(fileName = file.name, filePath = file.path) { backgroundScope ->
     val textLines = try {
         file.readTextLines(backgroundScope)
     } catch (e: Throwable) {
