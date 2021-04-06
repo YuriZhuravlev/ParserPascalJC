@@ -33,7 +33,6 @@ class ParserPascal(val text: String) {
         const val TRUE = "true"
         const val FALSE = "false"
         val setSeparator = setOf(' ', '\n', '\r', '\t')
-        val setArithmeticOperations = setOf("+", "-", "*", DIV)
         val setRelationshipOperations = setOf("=", "<", ">", "<=", ">=", "<>")
     }
 
@@ -213,109 +212,264 @@ class ParserPascal(val text: String) {
 
     private fun sectionOperator(): Boolean {
         //<раздел операторов> ::= begin <список операторов> end | begin end
-        // TODO
+        getToken(true)
+        if (terminal(BEGIN)
+            && nextTokenAndSkipSeparator()
+        ) {
+            val index = mIndex
+            if ((listOperator() && nextTokenAndSkipSeparator() && terminal(END))
+                || (setIndex(index) && terminal(END))
+            ) {
+                return true
+            }
+        }
         return false
     }
 
     private fun operator(): Boolean {
         // <оператор> ::= <ввод/вывод> | <оператор выбора> | <оператор цикла> | <составной оператор> | <оператор присваивания>
-        // TODO
+        val index = mIndex
+        if (inputOutput()
+            || (setIndex(index) && operatorSelect())
+            || (setIndex(index) && operatorLoop())
+            || (setIndex(index) && operatorCompound())
+            || (setIndex(index) && operatorAssignment())
+        ) {
+            return true
+        }
         return false
     }
 
     private fun inputOutput(): Boolean {
         // <ввод/вывод> ::= <оператор ввода/вывода> ”(“ <выражение> “)” | <оператор ввода/вывода> “()” | <оператор ввода/вывода>
-        // TODO
+        if (operatorInputOutput()) {
+            if (getToken(true) == '(') {
+                val index = mIndex
+                if (getToken(true) == ')' || (setIndex(index) && expression() && getToken(true) == ')')) {
+                    return true
+                }
+                return false
+            }
+            return true
+        }
         return false
     }
 
     private fun operatorInputOutput(): Boolean {
         // <оператор ввода/вывода> ::= write | read
-        // TODO
+        getToken(true)
+        val index = mIndex
+        if (terminal(WRITE)
+            || (setIndex(index) && terminal(READ))
+        ) {
+            return true
+        }
         return false
     }
 
     private fun operatorSelect(): Boolean {
         // <оператор выбора> ::= if <логическое выражение> then <оператор> | if <логическое выражение> then <оператор> else <оператор>
-        // TODO
+        getToken(true)
+        if (terminal(IF)
+            && nextTokenAndSkipSeparator()
+            && booleanExpression()
+            && nextTokenAndSkipSeparator()
+            && terminal(THEN)
+            && operator()
+            && nextTokenAndSkipSeparator()
+        ) {
+            var index = mIndex
+            if (terminal(ELSE) && nextTokenAndSkipSeparator() && operator()) {
+                index = mIndex
+            }
+            mIndex = index
+            return true
+        }
         return false
     }
 
     private fun operatorLoop(): Boolean {
         // <оператор цикла> ::= for <идентификатор> := <выражение> to <выражение> do <оператор> | for <идентификатор> := <выражение> downto <выражение> do <оператор>
-        // TODO
+        getToken(true)
+        if (terminal(FOR)
+            && identifier()
+            && nextTokenAndSkipSeparator()
+            && terminal(":=")
+            && expression()
+            && nextTokenAndSkipSeparator()
+        ) {
+            val index = mIndex
+            if ((terminal(TO) || (setIndex(index) && terminal(DOWN_TO)))
+                && expression()
+                && terminal(DO)
+                && operator()
+            ) {
+                return true
+            }
+        }
         return false
     }
 
     private fun operatorCompound(): Boolean {
         // <составной оператор> ::= begin <список операторов> end | begin end
-        // TODO
+        getToken(true)
+        if (terminal(BEGIN)
+            && nextTokenAndSkipSeparator()
+        ) {
+            val index = mIndex
+            if ((listOperator() && nextTokenAndSkipSeparator() && terminal(END))
+                || (setIndex(index) && terminal(END))
+            ) {
+                return true
+            }
+        }
         return false
     }
 
-    private fun operatorsList(): Boolean {
+    private fun listOperator(): Boolean {
         // <список операторов> ::= <оператор> |  <оператор> ; | <оператор> ; <список операторов>
-        // TODO
+        if (operator()) {
+            var index = mIndex
+            var fl = true
+            while (fl && getToken(true) == ';' && nextToken()) {
+                index = mIndex
+                if (operator()) {
+                    index = mIndex
+                } else {
+                    fl = false
+                }
+            }
+            mIndex = index
+            return true
+        }
         return false
     }
 
     private fun operatorAssignment(): Boolean {
         // <оператор присваивания> ::= <переменная> := <выражение> | <переменная> := @ <идентификатор>
-        // TODO
+        if (variable()
+            && nextTokenAndSkipSeparator()
+            && terminal(":=")
+            && ((getToken(true) == '@' && identifier()) || expression())
+        ) {
+            return true
+        }
         return false
     }
 
     private fun expression(): Boolean {
         //<выражение> ::= <арифметическое выражение> | <логическое выражение>
-        // TODO
+        val index = mIndex
+        if (arithmeticExpression() || (setIndex(index) && booleanExpression())) {
+            return true
+        }
         return false
     }
 
     private fun booleanExpression(): Boolean {
         //<логическое выражение> ::= <простое логическое выражение> | <отношение>
-        // TODO
+        val index = mIndex
+        if (simpleBooleanExpression() || (setIndex(index) && relationship())) {
+            return true
+        }
         return false
     }
 
     private fun simpleBooleanExpression(): Boolean {
         //<простое логическое выражение> ::= < логическое слагаемое > | <простое логическое выражение> or <логическое слагаемое>
-        // TODO
+        if (booleanTerm()) {
+            getToken(true)
+            var index = mIndex
+            if (terminal(OR) && simpleBooleanExpression()) {
+                index = mIndex
+            }
+            mIndex = index
+            return true
+        }
         return false
     }
 
     private fun booleanTerm(): Boolean {
         //<логическое слагаемое> ::= <логический множитель> | <логическое слагаемое> and <логический множитель>
-        // TODO
+        if (booleanFactor()) {
+            getToken(true)
+            var index = mIndex
+            if (terminal(AND) && booleanTerm()) {
+                index = mIndex
+            }
+            mIndex = index
+            return true
+        }
         return false
     }
 
     private fun booleanFactor(): Boolean {
         //<логический множитель> ::= <логическая константа> | <переменная> | not <логический множитель> | “(“ <логическое выражение> “)”
-        // TODO
+        getToken(true)
+        val index = mIndex
+        if (booleanConstant()
+            && (setIndex(index) && terminal(NOT) && booleanFactor())
+            && (setIndex(index) && variable())
+            && (setIndex(index) && getToken(true) == '(' && booleanExpression() && getToken(true) == ')')
+        ) {
+            return true
+        }
         return false
     }
 
     private fun relationship(): Boolean {
         //<отношение> ::= <арифметическое выражение> <операция сравнения><арифметическое выражение> | <простое логическое выражение> <операция сравнения> <простое логическое выражение>
-        // TODO
+        val index = mIndex
+        if ((arithmeticExpression() && relationshipOperations() && arithmeticExpression())
+            || (setIndex(index) && booleanExpression() && relationshipOperations() && booleanExpression())
+        ) {
+            return true
+        }
         return false
     }
 
     private fun arithmeticExpression(): Boolean {
         //<арифметическое выражение> ::= <слагаемое> { <операции сложения> <слагаемое> } | <операция сложения> <слагаемое> { <операция сложения> <слагаемое>}
-        // TODO
+        var index = mIndex
+        if (additionOperations()) {
+            index = mIndex
+        } else {
+            mIndex = index
+        }
+        if (term()) {
+            index = mIndex
+            while (additionOperations() && term()) {
+                index = mIndex
+            }
+            mIndex = index
+            return true
+        }
         return false
     }
 
     private fun term(): Boolean {
         //<слагаемое> ::= <множитель> { <операция умножения> <множитель> }
-        // TODO
+        if (factor()) {
+            var index = mIndex
+            while (multiplicationOperations() && factor()) {
+                index = mIndex
+            }
+            mIndex = index
+            return true
+        }
         return false
     }
 
     private fun factor(): Boolean {
         //<множитель> ::= <целое число> | <переменная> | “(“ <арифметическое выражение> “)”
-        // TODO
+        getToken(true)
+        val index = mIndex
+        if (integer()
+            && (setIndex(index) && variable())
+            && (setIndex(index) && getToken(true) == '(' && arithmeticExpression() && getToken(true) == ')')
+        ) {
+            return true
+        }
         return false
     }
 
@@ -403,7 +557,6 @@ class ParserPascal(val text: String) {
 
     private fun type(): Boolean {
         // <тип> ::= (^) integer | (^) boolean
-        // TODO проверить возможность разделителя между ^ и именем типа
         if (getToken(true) == '^') {
             nextToken()
         }
