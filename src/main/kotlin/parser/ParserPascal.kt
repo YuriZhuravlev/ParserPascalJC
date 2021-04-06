@@ -576,6 +576,7 @@ class ParserPascal(val text: String) {
         if (mIndex == text.lastIndex) {
             return true
         }
+        nextTokenAndSkipSeparator()
         return setSeparator.contains(getToken(true))
     }
 }
