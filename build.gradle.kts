@@ -18,7 +18,7 @@ repositories {
 
 dependencies {
     implementation(compose.desktop.currentOs)
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.0")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
 }
 
 tasks.withType<KotlinCompile>() {

@@ -32,7 +32,7 @@ fun ToolbarView(model: Toolbar) {
                         .padding(horizontal = 10.dp)
                         .clickable(true) {
                             textButton = "Проверка"
-                            model.checkText({isChecked = true; textButton = "Проверить"}, {})
+                            model.checkText({isChecked = true; textButton = "Проверить"}, {textButton = "Ошибочка"})
                         },
                     color = Color.White,
                     fontSize = 12.sp

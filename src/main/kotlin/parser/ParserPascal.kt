@@ -163,6 +163,7 @@ class ParserPascal(val text: String) {
         // <описание константы> ::= <идентификатор> = <выражение>
         if (identifier()
             && getToken(true) == '='
+            && nextToken()
             && expression()
         ) {
             return true
@@ -243,9 +244,9 @@ class ParserPascal(val text: String) {
     private fun inputOutput(): Boolean {
         // <ввод/вывод> ::= <оператор ввода/вывода> ”(“ <выражение> “)” | <оператор ввода/вывода> “()” | <оператор ввода/вывода>
         if (operatorInputOutput()) {
-            if (getToken(true) == '(') {
+            if (getToken(true) == '(' && nextToken()) {
                 val index = mIndex
-                if (getToken(true) == ')' || (setIndex(index) && expression() && getToken(true) == ')')) {
+                if ((getToken(true) == ')' && nextToken()) || (setIndex(index) && expression() && getToken(true) == ')' && nextToken())) {
                     return true
                 }
                 return false
@@ -271,13 +272,14 @@ class ParserPascal(val text: String) {
         // <оператор выбора> ::= if <логическое выражение> then <оператор> | if <логическое выражение> then <оператор> else <оператор>
         getToken(true)
         if (terminal(IF)
-            && nextTokenAndSkipSeparator()
+//            && nextTokenAndSkipSeparator()
             && booleanExpression()
-            && nextTokenAndSkipSeparator()
+//            && nextTokenAndSkipSeparator()
             && terminal(THEN)
             && operator()
-            && nextTokenAndSkipSeparator()
+//            && nextTokenAndSkipSeparator()
         ) {
+            getToken(true)
             var index = mIndex
             if (terminal(ELSE) && nextTokenAndSkipSeparator() && operator()) {
                 index = mIndex
@@ -296,8 +298,9 @@ class ParserPascal(val text: String) {
             && nextTokenAndSkipSeparator()
             && terminal(":=")
             && expression()
-            && nextTokenAndSkipSeparator()
+//            && nextTokenAndSkipSeparator()
         ) {
+            getToken(true)
             val index = mIndex
             if ((terminal(TO) || (setIndex(index) && terminal(DOWN_TO)))
                 && expression()
@@ -350,7 +353,7 @@ class ParserPascal(val text: String) {
         if (variable()
             && nextTokenAndSkipSeparator()
             && terminal(":=")
-            && ((getToken(true) == '@' && identifier()) || expression())
+            && ((getToken(true) == '@' && nextToken() && identifier()) || expression())
         ) {
             return true
         }
@@ -408,9 +411,9 @@ class ParserPascal(val text: String) {
         getToken(true)
         val index = mIndex
         if (booleanConstant()
-            && (setIndex(index) && terminal(NOT) && booleanFactor())
-            && (setIndex(index) && variable())
-            && (setIndex(index) && getToken(true) == '(' && booleanExpression() && getToken(true) == ')')
+            || (setIndex(index) && terminal(NOT) && booleanFactor())
+            || (setIndex(index) && variable())
+            || (setIndex(index) && getToken(true) == '(' && nextToken() && booleanExpression() && getToken(true) == ')' && nextToken())
         ) {
             return true
         }
@@ -465,8 +468,8 @@ class ParserPascal(val text: String) {
         getToken(true)
         val index = mIndex
         if (integer()
-            && (setIndex(index) && variable())
-            && (setIndex(index) && getToken(true) == '(' && arithmeticExpression() && getToken(true) == ')')
+            || (setIndex(index) && variable())
+            || (setIndex(index) && getToken(true) == '(' && nextToken() && arithmeticExpression() && getToken(true) == ')' && nextToken())
         ) {
             return true
         }

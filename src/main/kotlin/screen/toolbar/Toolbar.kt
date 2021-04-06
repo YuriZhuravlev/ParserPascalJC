@@ -1,21 +1,40 @@
 package screen.toolbar
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import parser.ParserPascal
 import screen.CodeViewer
+import java.io.File
 
 class Toolbar(val codeViewer: CodeViewer) {
-    private val success = "Ах да, я ж нихуя не сделал анализатор"
-    private val failed = "Я нихуя не сделал, но походу ты пытаешься наебать меня (файл не .pas)"
+    private val success = "Принадлежит к подмножеству"
+    private val failed = "Не принадлежит к подмножеству"
+    private lateinit var mParser: ParserPascal
     val active = codeViewer.editors.active
     var result = ""
 
     fun checkText(onSuccess: () -> Unit, onFailure: () -> Unit) {
-        //TODO
-        if (codeViewer.editors.active?.fileName?.endsWith(".pas") == true) {
-            result = success
-            onSuccess()
-        } else {
-            result = failed
-            onSuccess()
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                val text = File("build/test.pas").readText()
+                //val text = File(codeViewer.editors.active!!.fileName).readText()
+                mParser = ParserPascal(text)
+                val res = mParser.parse()
+                if (res) {
+                    result = success
+                } else {
+                    result = failed
+                }
+                GlobalScope.launch(Dispatchers.Main) {
+                    onSuccess()
+                }
+            } catch (e: Exception) {
+                GlobalScope.launch(Dispatchers.Main) {
+                    onFailure()
+                }
+                return@launch
+            }
         }
     }
 }
