@@ -9,9 +9,3 @@ fun main() = Window(
 ) {
     MainView()
 }
-
-private fun loadImageResource(path: String): BufferedImage {
-    val resource = Thread.currentThread().contextClassLoader.getResource(path)
-    requireNotNull(resource) { "Resource $path not found" }
-    return resource.openStream().use(ImageIO::read)
-}

@@ -6,12 +6,21 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import util.TextLines
+import java.awt.image.BufferedImage
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
 import java.io.RandomAccessFile
 import java.nio.channels.FileChannel
 import java.nio.charset.StandardCharsets
+import javax.imageio.ImageIO
+
+
+fun loadImageResource(path: String): BufferedImage {
+    val resource = Thread.currentThread().contextClassLoader.getResource(path)
+    requireNotNull(resource) { "Resource $path not found" }
+    return resource.openStream().use(ImageIO::read)
+}
 
 fun File.readTextLines(scope: CoroutineScope): TextLines {
     var byteBufferSize: Int
