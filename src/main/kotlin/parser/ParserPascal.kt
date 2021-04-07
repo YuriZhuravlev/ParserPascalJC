@@ -69,7 +69,10 @@ class ParserPascal(val text: String) {
         return true
     }
 
-    private fun terminal(word: String): Boolean {
+    private fun terminal(word: String, skipSeparators: Boolean = false): Boolean {
+        if (skipSeparators) {
+            getToken(true)
+        }
         word.forEach {
             if (it.equals(getToken(), true) && nextToken()) {
                 // next token
@@ -77,10 +80,12 @@ class ParserPascal(val text: String) {
                 return false
             }
         }
+        println("found terminate $word | $mIndex")
         return true
     }
 
     suspend fun parse(): Boolean {
+        println("______________\n_____________\n")
         return suspendCoroutine { continuation ->
             if (mResult != null) {
                 continuation.resume(mResult!!)
@@ -99,6 +104,7 @@ class ParserPascal(val text: String) {
             && block()
             && getToken(true) == '.'
         ) {
+            println("found program | $mIndex")
             return empty()
         }
         return false
@@ -106,11 +112,11 @@ class ParserPascal(val text: String) {
 
     private fun head(): Boolean {
         // <заголовок программы> ::= program <идентификатор>
-        getToken(true)
-        if (terminal(PROGRAM)
+        if (terminal(PROGRAM, true)
             && nextTokenAndSkipSeparator()
             && identifier()
         ) {
+            println("found head | $mIndex")
             return true
         }
         return false
@@ -122,6 +128,7 @@ class ParserPascal(val text: String) {
         if ((sectionDescription() && sectionOperator())
             || (setIndex(index) && sectionOperator())
         ) {
+            println("found block | $mIndex")
             return true
         }
         return false
@@ -135,6 +142,7 @@ class ParserPascal(val text: String) {
             || (setIndex(index) && sectionConsts())
             || (setIndex(index) && sectionVars())
         ) {
+            println("found sectionDescription | $mIndex")
             return true
         }
         return false
@@ -142,8 +150,7 @@ class ParserPascal(val text: String) {
 
     private fun sectionConsts(): Boolean {
         // <раздел констант> ::= const <описание константы> ; {<описание константы> ; }
-        getToken(true)
-        if (terminal(CONST)
+        if (terminal(CONST, true)
             && nextTokenAndSkipSeparator()
             && descriptionConst()
             && getToken(true) == ';'
@@ -154,6 +161,7 @@ class ParserPascal(val text: String) {
                 index = mIndex
             }
             mIndex = index
+            println("found sectionConsts | $mIndex")
             return true
         }
         return false
@@ -166,6 +174,7 @@ class ParserPascal(val text: String) {
             && nextToken()
             && expression()
         ) {
+            println("found descriptionConst | $mIndex")
             return true
         }
         return false
@@ -173,8 +182,7 @@ class ParserPascal(val text: String) {
 
     private fun sectionVars(): Boolean {
         // <раздел переменных> ::= var <описание переменных> ; {<описание переменных>;}
-        getToken(true)
-        if (terminal(VAR)
+        if (terminal(VAR, true)
             && nextTokenAndSkipSeparator()
             && descriptionVars()
             && getToken(true) == ';'
@@ -185,6 +193,7 @@ class ParserPascal(val text: String) {
                 index = mIndex
             }
             mIndex = index
+            println("found sectionVars | $mIndex")
             return true
         }
         return false
@@ -193,6 +202,7 @@ class ParserPascal(val text: String) {
     private fun descriptionVars(): Boolean {
         // <описание переменных> ::= <список имен переменных> : <тип>
         if (listVarNames() && getToken(true) == ':' && nextToken() && type()) {
+            println("found descriptionVars | $mIndex")
             return true
         }
         return false
@@ -206,6 +216,7 @@ class ParserPascal(val text: String) {
                 index = mIndex
             }
             mIndex = index
+            println("found listVarNames | $mIndex")
             return true
         }
         return false
@@ -213,14 +224,14 @@ class ParserPascal(val text: String) {
 
     private fun sectionOperator(): Boolean {
         //<раздел операторов> ::= begin <список операторов> end | begin end
-        getToken(true)
-        if (terminal(BEGIN)
+        if (terminal(BEGIN, true)
             && nextTokenAndSkipSeparator()
         ) {
             val index = mIndex
-            if ((listOperator() && nextTokenAndSkipSeparator() && terminal(END))
+            if ((listOperator() && terminal(END, true))
                 || (setIndex(index) && terminal(END))
             ) {
+                println("found sectionOperator | $mIndex")
                 return true
             }
         }
@@ -236,6 +247,7 @@ class ParserPascal(val text: String) {
             || (setIndex(index) && operatorCompound())
             || (setIndex(index) && operatorAssignment())
         ) {
+            println("found operator | $mIndex")
             return true
         }
         return false
@@ -246,11 +258,14 @@ class ParserPascal(val text: String) {
         if (operatorInputOutput()) {
             if (getToken(true) == '(' && nextToken()) {
                 val index = mIndex
-                if ((getToken(true) == ')' && nextToken()) || (setIndex(index) && expression() && getToken(true) == ')' && nextToken())) {
+                if ((getToken(true) == ')' && nextToken())
+                    || (setIndex(index) && expression() && getToken(true) == ')' && nextToken())) {
+                    println("found inputOutput | $mIndex")
                     return true
                 }
                 return false
             }
+            println("found inputOutput | $mIndex")
             return true
         }
         return false
@@ -263,6 +278,7 @@ class ParserPascal(val text: String) {
         if (terminal(WRITE)
             || (setIndex(index) && terminal(READ))
         ) {
+            println("found operatorInputOutput | $mIndex")
             return true
         }
         return false
@@ -270,21 +286,17 @@ class ParserPascal(val text: String) {
 
     private fun operatorSelect(): Boolean {
         // <оператор выбора> ::= if <логическое выражение> then <оператор> | if <логическое выражение> then <оператор> else <оператор>
-        getToken(true)
-        if (terminal(IF)
-//            && nextTokenAndSkipSeparator()
+        if (terminal(IF, true)
             && booleanExpression()
-//            && nextTokenAndSkipSeparator()
-            && terminal(THEN)
+            && terminal(THEN, true)
             && operator()
-//            && nextTokenAndSkipSeparator()
         ) {
-            getToken(true)
             var index = mIndex
-            if (terminal(ELSE) && nextTokenAndSkipSeparator() && operator()) {
+            if (terminal(ELSE, true) && nextTokenAndSkipSeparator() && operator()) {
                 index = mIndex
             }
             mIndex = index
+            println("found operatorSelect | $mIndex")
             return true
         }
         return false
@@ -292,21 +304,19 @@ class ParserPascal(val text: String) {
 
     private fun operatorLoop(): Boolean {
         // <оператор цикла> ::= for <идентификатор> := <выражение> to <выражение> do <оператор> | for <идентификатор> := <выражение> downto <выражение> do <оператор>
-        getToken(true)
-        if (terminal(FOR)
+        if (terminal(FOR, true)
             && identifier()
-            && nextTokenAndSkipSeparator()
-            && terminal(":=")
+            && terminal(":=", true)
             && expression()
-//            && nextTokenAndSkipSeparator()
         ) {
             getToken(true)
             val index = mIndex
             if ((terminal(TO) || (setIndex(index) && terminal(DOWN_TO)))
                 && expression()
-                && terminal(DO)
+                && terminal(DO, true)
                 && operator()
             ) {
+                println("found operatorLoop | $mIndex")
                 return true
             }
         }
@@ -315,14 +325,14 @@ class ParserPascal(val text: String) {
 
     private fun operatorCompound(): Boolean {
         // <составной оператор> ::= begin <список операторов> end | begin end
-        getToken(true)
-        if (terminal(BEGIN)
+        if (terminal(BEGIN, true)
             && nextTokenAndSkipSeparator()
         ) {
             val index = mIndex
-            if ((listOperator() && nextTokenAndSkipSeparator() && terminal(END))
+            if ((listOperator() && terminal(END, true))
                 || (setIndex(index) && terminal(END))
             ) {
+                println("found operatorCompound | $mIndex")
                 return true
             }
         }
@@ -343,6 +353,7 @@ class ParserPascal(val text: String) {
                 }
             }
             mIndex = index
+            println("found listOperator | $mIndex")
             return true
         }
         return false
@@ -351,10 +362,10 @@ class ParserPascal(val text: String) {
     private fun operatorAssignment(): Boolean {
         // <оператор присваивания> ::= <переменная> := <выражение> | <переменная> := @ <идентификатор>
         if (variable()
-            && nextTokenAndSkipSeparator()
-            && terminal(":=")
+            && terminal(":=", true)
             && ((getToken(true) == '@' && nextToken() && identifier()) || expression())
         ) {
+            println("found operatorAssignment | $mIndex")
             return true
         }
         return false
@@ -363,7 +374,9 @@ class ParserPascal(val text: String) {
     private fun expression(): Boolean {
         //<выражение> ::= <арифметическое выражение> | <логическое выражение>
         val index = mIndex
-        if (arithmeticExpression() || (setIndex(index) && booleanExpression())) {
+        if (arithmeticExpression()
+            || (setIndex(index) && booleanExpression())) {
+            println("found expression | $mIndex")
             return true
         }
         return false
@@ -372,7 +385,9 @@ class ParserPascal(val text: String) {
     private fun booleanExpression(): Boolean {
         //<логическое выражение> ::= <простое логическое выражение> | <отношение>
         val index = mIndex
-        if (simpleBooleanExpression() || (setIndex(index) && relationship())) {
+        if (simpleBooleanExpression()
+            || (setIndex(index) && relationship())) {
+            println("found booleanExpression | $mIndex")
             return true
         }
         return false
@@ -381,12 +396,12 @@ class ParserPascal(val text: String) {
     private fun simpleBooleanExpression(): Boolean {
         //<простое логическое выражение> ::= < логическое слагаемое > | <простое логическое выражение> or <логическое слагаемое>
         if (booleanTerm()) {
-            getToken(true)
             var index = mIndex
-            if (terminal(OR) && simpleBooleanExpression()) {
+            if (terminal(OR, true) && simpleBooleanExpression()) {
                 index = mIndex
             }
             mIndex = index
+            println("found simpleBooleanExpression | $mIndex")
             return true
         }
         return false
@@ -395,12 +410,12 @@ class ParserPascal(val text: String) {
     private fun booleanTerm(): Boolean {
         //<логическое слагаемое> ::= <логический множитель> | <логическое слагаемое> and <логический множитель>
         if (booleanFactor()) {
-            getToken(true)
             var index = mIndex
-            if (terminal(AND) && booleanTerm()) {
+            if (terminal(AND, true) && booleanTerm()) {
                 index = mIndex
             }
             mIndex = index
+            println("found booleanTerm | $mIndex")
             return true
         }
         return false
@@ -415,6 +430,7 @@ class ParserPascal(val text: String) {
             || (setIndex(index) && variable())
             || (setIndex(index) && getToken(true) == '(' && nextToken() && booleanExpression() && getToken(true) == ')' && nextToken())
         ) {
+            println("found booleanFactor | $mIndex")
             return true
         }
         return false
@@ -426,6 +442,7 @@ class ParserPascal(val text: String) {
         if ((arithmeticExpression() && relationshipOperations() && arithmeticExpression())
             || (setIndex(index) && booleanExpression() && relationshipOperations() && booleanExpression())
         ) {
+            println("found relationship | $mIndex")
             return true
         }
         return false
@@ -445,6 +462,7 @@ class ParserPascal(val text: String) {
                 index = mIndex
             }
             mIndex = index
+            println("found arithmeticExpression | $mIndex")
             return true
         }
         return false
@@ -458,6 +476,7 @@ class ParserPascal(val text: String) {
                 index = mIndex
             }
             mIndex = index
+            println("found term | $mIndex")
             return true
         }
         return false
@@ -471,6 +490,7 @@ class ParserPascal(val text: String) {
             || (setIndex(index) && variable())
             || (setIndex(index) && getToken(true) == '(' && nextToken() && arithmeticExpression() && getToken(true) == ')' && nextToken())
         ) {
+            println("found factor | $mIndex")
             return true
         }
         return false
@@ -482,6 +502,7 @@ class ParserPascal(val text: String) {
             if (getToken(true) == '^') {
                 nextToken()
             }
+            println("found variable | $mIndex")
             return true
         }
         return false
@@ -497,6 +518,7 @@ class ParserPascal(val text: String) {
         while (getToken().isDigit() && nextToken()) {
             isNumber = true
         }
+        if (isNumber) { println("found integer | $mIndex") }
         return isNumber
     }
 
@@ -553,6 +575,7 @@ class ParserPascal(val text: String) {
             while (getToken().isLetterOrDigit() && nextToken()) {
                 // next token body
             }
+            println("found identifier | $mIndex")
             return true
         }
         return false
@@ -567,6 +590,7 @@ class ParserPascal(val text: String) {
         if (terminal(INTEGER)
             || (setIndex(index) && terminal(BOOLEAN))
         ) {
+            println("found type | $mIndex")
             return true
         }
         return false
@@ -574,6 +598,7 @@ class ParserPascal(val text: String) {
 
     private fun empty(): Boolean {
         if (mIndex == text.lastIndex) {
+            println("found empty | $mIndex")
             return true
         }
         nextTokenAndSkipSeparator()
