@@ -85,8 +85,8 @@ class ParserPascal(val text: String) {
     }
 
     suspend fun parse(): Boolean {
-        println("______________\n_____________\n")
         return suspendCoroutine { continuation ->
+            println("______________\n_____________\n")
             if (mResult != null) {
                 continuation.resume(mResult!!)
             } else {

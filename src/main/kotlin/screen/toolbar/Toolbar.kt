@@ -22,10 +22,10 @@ class Toolbar(val codeViewer: CodeViewer) {
                 val text = File(codeViewer.editors.active!!.filePath).readText()
                 mParser = ParserPascal(text)
                 val res = mParser.parse()
-                if (res) {
-                    result = success
+                result = if (res) {
+                    success
                 } else {
-                    result = failed
+                    failed
                 }
                 GlobalScope.launch(Dispatchers.Main) {
                     onSuccess()

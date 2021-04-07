@@ -1,7 +1,6 @@
 package screen.toolbar
 
 import androidx.compose.desktop.Window
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Row
@@ -10,7 +9,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.imageFromResource
 import androidx.compose.ui.res.svgResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntSize
@@ -31,9 +29,10 @@ const val colorDisable = 0xFF808080
 @Composable
 fun ToolbarView(model: Toolbar) {
     var clickableRunButton by remember { mutableStateOf(true) }
+    var activeNotNull by remember { mutableStateOf(false) }
     var isChecked by remember { mutableStateOf(false) }
 
-    clickableRunButton = model.active != null
+    activeNotNull = model.active != null
     Box(
         modifier = Modifier
             .height(44.dp)
@@ -70,7 +69,7 @@ fun ToolbarView(model: Toolbar) {
             Column(modifier = Modifier
                 .fillMaxHeight()
                 .padding(horizontal = 5.dp)
-                .clickable(clickableRunButton) {
+                .clickable(activeNotNull && clickableRunButton) {
                     clickableRunButton = false
                     model.checkText(
                         {
@@ -85,13 +84,13 @@ fun ToolbarView(model: Toolbar) {
                     painter = svgResource("ic_run.svg"),
                     contentDescription = "Run",
                     modifier = Modifier.align(Alignment.CenterHorizontally),
-                    tint = if (clickableRunButton) {
+                    tint = if (activeNotNull && clickableRunButton) {
                         Color(colorRun)
                     } else {
                         Color(colorDisable)
                     })
                 Text(text = "Проверить",
-                    color = if (clickableRunButton) {
+                    color = if (activeNotNull && clickableRunButton) {
                         Color(colorEnable)
                     } else {
                         Color(colorDisable)
@@ -103,7 +102,7 @@ fun ToolbarView(model: Toolbar) {
             Column(modifier = Modifier
                 .fillMaxHeight()
                 .padding(horizontal = 5.dp)
-                .clickable(clickableRunButton) {
+                .clickable(activeNotNull) {
                     Window(
                         title = "Изменение документа",
                         icon = loadImageResource("ic_app.png")
@@ -119,13 +118,13 @@ fun ToolbarView(model: Toolbar) {
                     painter = svgResource("ic_edit.svg"),
                     contentDescription = "Edit",
                     modifier = Modifier.align(Alignment.CenterHorizontally),
-                    tint = if (clickableRunButton) {
+                    tint = if (activeNotNull) {
                         Color(colorEnable)
                     } else {
                         Color(colorDisable)
                     })
                 Text(text = "Изменить",
-                    color = if (clickableRunButton) {
+                    color = if (activeNotNull) {
                         Color(colorEnable)
                     } else {
                         Color(colorDisable)
