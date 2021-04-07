@@ -3,9 +3,11 @@ package screen.edit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import screen.NAME_DIR
 import java.io.File
 
 class Edit(val path: String, val onEdit: () -> Unit) {
+    val name = path.replace(NAME_DIR + '\\', "")
 
     fun getText(): String {
         val file = File(path)

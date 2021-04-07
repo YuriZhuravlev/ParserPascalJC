@@ -1,5 +1,6 @@
 package screen.common
 
+import androidx.compose.material.TextFieldColors
 import androidx.compose.material.darkColors
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
@@ -19,7 +20,10 @@ object AppTheme {
             background = backgroundDark,
             surface = backgroundMedium,
             onSurface = Color.LightGray,
-            primary = Color.White
+            primary = backgroundLight,
+            onPrimary = Color.White,
+            onSecondary = Color.LightGray,
+            onBackground = Color.LightGray,
         ),
     )
 
