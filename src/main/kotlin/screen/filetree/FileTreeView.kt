@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.svgResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -110,8 +111,8 @@ private fun FileItemIcon(modifier: Modifier, model: FileTree.Item) = Box(modifie
             )
         }
         is FileTree.ItemType.File -> when (type.ext) {
-            "pas" -> Icon(Icons.Default.Info, contentDescription = null, tint = Color(0xFFDFE3E4))
-            else -> Icon(Icons.Default.Face, contentDescription = null, tint = Color(0xFF87939A))
+            "pas" -> Icon(svgResource("ic_file.svg"), contentDescription = null, tint = Color(0xFFDFE3E4))
+            else -> Icon(svgResource("ic_other_file.svg"), contentDescription = null, tint = Color(0xFF87939A))
         }
     }
 }
