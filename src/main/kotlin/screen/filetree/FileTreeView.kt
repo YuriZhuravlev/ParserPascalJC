@@ -58,13 +58,6 @@ fun FileTreeView(model: FileTree) = Surface(
                     FileTreeItemView(fontSize, lineHeight, model.items[it])
                 }
             }
-
-//            VerticalScrollbar(
-//                Modifier.align(Alignment.CenterEnd),
-//                scrollState,
-//                model.items.size,
-//                lineHeight
-//            )
         }
     }
 }

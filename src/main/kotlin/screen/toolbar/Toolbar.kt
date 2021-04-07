@@ -5,6 +5,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import parser.ParserPascal
 import screen.CodeViewer
+import screen.NAME_DIR
+import screen.filetree.FileTree
 import java.io.File
 
 class Toolbar(val codeViewer: CodeViewer) {
@@ -38,10 +40,11 @@ class Toolbar(val codeViewer: CodeViewer) {
     }
 
     fun onEdit() {
-        //TODO("Not yet implemented")
+        codeViewer.editors.update(active!!.filePath)
     }
 
-    fun onAdd() {
-        //TODO("Not yet implemented")
+    fun onAdd(path: String) {
+        codeViewer.fileTree = FileTree(File(NAME_DIR), codeViewer.editors)
+        codeViewer.editors.open(File(path))
     }
 }

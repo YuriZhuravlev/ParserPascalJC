@@ -6,7 +6,7 @@ import kotlinx.coroutines.launch
 import screen.NAME_DIR
 import java.io.File
 
-class Add(val onAdd: () -> Unit) {
+class Add(val onAdd: (path: String) -> Unit) {
     fun commit(title: String, text: String, onSuccess: () -> Unit): Boolean {
         val file = File(NAME_DIR, title)
         if (file.exists()) {
@@ -16,7 +16,7 @@ class Add(val onAdd: () -> Unit) {
                 file.createNewFile()
                 file.writeText(text)
                 GlobalScope.launch(Dispatchers.Main) {
-                    onAdd()
+                    onAdd(file.path)
                     onSuccess()
                 }
             }

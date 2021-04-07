@@ -19,11 +19,15 @@ class Edit(val path: String, val onEdit: () -> Unit) {
     fun commit(text: String, onSuccess: () -> Unit) {
         val file = File(path)
         GlobalScope.launch(Dispatchers.IO) {
-            file.createNewFile()
-            file.writeText(text)
-            GlobalScope.launch(Dispatchers.Main) {
-                onEdit()
-                onSuccess()
+            try {
+                file.createNewFile()
+                file.writeText(text)
+                GlobalScope.launch(Dispatchers.Main) {
+                    onEdit()
+                    onSuccess()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }

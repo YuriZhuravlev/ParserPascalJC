@@ -52,8 +52,8 @@ fun ToolbarView(model: Toolbar) {
                                 icon = loadImageResource("ic_app.png")
                             ) {
                                 MaterialTheme(colors = AppTheme.colors.material) {
-                                    AddView(Add {
-                                        model.onAdd()
+                                    AddView(Add { path ->
+                                        model.onAdd(path)
                                     })
                                 }
                             }

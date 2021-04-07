@@ -23,44 +23,13 @@ fun loadImageResource(path: String): BufferedImage {
 }
 
 fun File.readTextLines(scope: CoroutineScope): TextLines {
-    var byteBufferSize: Int
-    val byteBuffer = RandomAccessFile(this, "r").use { file ->
-        byteBufferSize = file.length().toInt()
-        file.channel
-            .map(FileChannel.MapMode.READ_ONLY, 0, file.length())
-    }
-
-    val lineStartPositions = IntList()
-
-    var size by mutableStateOf(0)
-
-    val refreshJob = scope.launch {
-        delay(100)
-        size = lineStartPositions.size
-        while (true) {
-            delay(1000)
-            size = lineStartPositions.size
-        }
-    }
-
-    scope.launch(Dispatchers.IO) {
-        readLinePositions(lineStartPositions)
-        refreshJob.cancel()
-        size = lineStartPositions.size
-    }
+    val lines = this.readLines()
 
     return object : TextLines {
-        override val size get() = size
+        override val size get() = lines.size
 
         override fun get(index: Int): String {
-            val startPosition = lineStartPositions[index]
-            val length = if (index + 1 < size) lineStartPositions[index + 1] - startPosition else
-                byteBufferSize - startPosition
-            // Only JDK since 13 has slice() method we need, so do ugly for now.
-            byteBuffer.position(startPosition)
-            val slice = byteBuffer.slice()
-            slice.limit(length)
-            return StandardCharsets.UTF_8.decode(slice).toString()
+            return lines[index] //StandardCharsets.UTF_8.decode(slice).toString()
         }
     }
 }

@@ -6,6 +6,6 @@ import screen.filetree.FileTree
 
 class CodeViewer (
     val editors: Editors,
-    val fileTree: FileTree,
+    var fileTree: FileTree,
     val settings: Settings
 )

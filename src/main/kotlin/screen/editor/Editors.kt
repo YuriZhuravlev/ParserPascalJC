@@ -33,6 +33,25 @@ class Editors {
         }
     }
 
+    fun update(path: String) {
+        var index: Int = -1
+        editors.forEachIndexed { i, editor ->
+            if (editor.filePath == path) {
+                index = i
+            }
+        }
+        if (index != -1) {
+            editors.removeAt(index)
+        }
+        val editor = createEditor(File(path))
+        editor.selection = selection
+        editor.close = {
+            close(editor)
+        }
+        editors.add(editor)
+        editor.activate()
+    }
+
     private fun close(editor: Editor) {
         val index = editors.indexOf(editor)
         editors.remove(editor)
