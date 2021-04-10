@@ -76,6 +76,7 @@ fun ToolbarView(model: Toolbar) {
                             isChecked = true
                             clickableRunButton = true
                         }, {
+                            isChecked = true
                             clickableRunButton = true
                         }
                     )

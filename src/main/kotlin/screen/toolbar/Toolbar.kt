@@ -12,6 +12,7 @@ import java.io.File
 class Toolbar(val codeViewer: CodeViewer) {
     private val success = "Принадлежит к подмножеству"
     private val failed = "Не принадлежит к подмножеству"
+    private val error = "Произошла ошибка"
     private lateinit var mParser: ParserPascal
     val active = codeViewer.editors.active
     var result = ""
@@ -31,6 +32,7 @@ class Toolbar(val codeViewer: CodeViewer) {
                     onSuccess()
                 }
             } catch (e: Exception) {
+                result = error
                 GlobalScope.launch(Dispatchers.Main) {
                     onFailure()
                 }
